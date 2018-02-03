@@ -10,6 +10,8 @@
   "license": "ISC",
   "dependencies": {
     "express": "^4.16.2",
-    "express-handlebars": "^3.0.0"
+    "express-handlebars": "^3.0.0",
+    "method-override": "^2.3.10",
+    "nodemon": "^1.14.12"
   }
 }
