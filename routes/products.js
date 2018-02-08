@@ -14,19 +14,18 @@ router.get('/new', (req, res) => {
   console.log(db.getAll())
 })
 
-router.get('/:id', (req, res) => {
+router.get('/:id/edit', (req, res) => {
   let id = req.params.id;
   let elementIndex = db.find(id);
-  return res.render('singleProduct', elementIndex);
+  return res.render('edit', elementIndex);
   console.log(db.find(id))
 })
 
-  .get('/:id/edit', (req, res) => {
-    let id = req.params.id;
-    let elementIndex = db.find(id);
-    res.render('edit', elementIndex)
-  })
-
+router.get('/:id', (req, res) => {
+  let id = req.params.id;
+  let elementIndex = db.find(id);
+  res.render('singleProduct', elementIndex)
+})
 
 router.get('/', (req, res) => {
   console.log(db.getAll())
@@ -46,11 +45,11 @@ router.get('/', (req, res) => {
     }
   })
 
-  .put('/:id', (req, res) => {
+  .put('/:id/edit', (req, res) => {
     let id = req.params.id;
     let updatedItem = db.edit(id, req.body)
     if (updatedItem) {
-      res.redirect(`/products/${id}`)
+      res.redirect(`/products`)
     } else {
       res.redirect(`/products/${id}/edit`)
     }
@@ -59,8 +58,11 @@ router.get('/', (req, res) => {
   .delete('/:id', (req, res) => {
     let id = req.params.id;
     let body = req.body;
-    db.remove(id);
-    res.end();
+    if (db.remove(id)) {
+      res.redirect('/products');
+    } else {
+      res.redirect('/products/:id')
+    }
   });
 
 module.exports = router;

@@ -13,7 +13,6 @@ module.exports = {
   remove: remove
 }
 
-
 //returns full product list
 function getAll() {
   return productsArray;
@@ -37,11 +36,9 @@ function create(req) {
 //will find an Id
 function find(id) {
   id = parseInt(id);
-  let foundProduct = productsArray.filter((product) => {
-    return product.id === id;
-  })
-  if (foundProduct.length) {
-    return foundProduct[0]
+  let index = productsArray.findIndex(element => element.id === id); 
+  if (index >= 0) {
+    return productsArray[index];
   } else {
     return false;
   }
@@ -49,10 +46,11 @@ function find(id) {
 
 // will edit a product based on id
 function edit(id, item) {
+  // id = parseInt(id);
   let itemToEdit = find(id);
   let successful;
-
   if (item.name) {
+    console.log('hi');
     itemToEdit.name = item.name;
     successful = true;
   }
@@ -64,16 +62,19 @@ function edit(id, item) {
     itemToEdit.inventory = item.inventory;
     successful = true;
   } else {
+    console.log('hitting else')
     successful = false;
   }
+  console.log(successful);
   return successful;
 }
 
 function remove(id) {
   id = parseInt(id);
-  let index = productsArray.findIndex(product => product.id === id);
+  let index = productsArray.findIndex(element => element.id === id); 
   if (index >= 0) {
     productsArray.splice(index, 1)
+    return true;
   } else {
     return false;
   }

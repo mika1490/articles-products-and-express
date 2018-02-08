@@ -1,5 +1,3 @@
-//express work done
-
 //express work done: Post Put Delete
 
 const express = require('express');
@@ -8,8 +6,8 @@ const Articles = require('../db/articles')
 // const helper = require('../helper')
 
 
-// const validReq = { "success": true };
-// const invalidReq = { "success": false };
+const validReq = { "success": true };
+const invalidReq = { "success": false };
 
 // router.get('/new', (req, res) => {
 //   return res.render('new');

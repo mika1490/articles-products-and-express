@@ -1,11 +1,4 @@
-//crud helper functions
-//revealing module pattern
-//insert, bind, put, post
-//request comes in i get data i massage that data and send that data to the user
-
-//leave variables at the top
-
-// let articlesArray = [];
+let articlesArray = [];
 
 
 // module.exports = {
