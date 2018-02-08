@@ -5,6 +5,7 @@ const articles = require('./routes/articles');
 const products = require('./routes/products');
 const PORT = process.env.PORT || 8080;
 const methodOverride = require('method-override');
+const knex = require('./knex/knex.js');
 
 const app = express();
 app.engine('.hbs', handlebars({defaultLayout: 'main', extname: '.hbs'}));
