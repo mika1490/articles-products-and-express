@@ -1,18 +1,13 @@
 //express work done: Post Put Delete
 
 const express = require('express');
+const knex = require('../knex/knex.js');
+const handlebars = require('express-handlebars');
 const router = express.Router();
-const Articles = require('../db/articles')
-// const helper = require('../helper')
 
-
-const validReq = { "success": true };
-const invalidReq = { "success": false };
-
-// router.get('/new', (req, res) => {
-//   return res.render('new');
-//   console.log(Articles.getAll())
-// })
+router.get('/new', (req, res) => {
+  return res.render('new');
+})
 
 
 // router.get('/', (req, res) => {
@@ -47,5 +42,59 @@ const invalidReq = { "success": false };
   //   db.remove(id);
   //   res.end();
   // });
+
+
+  // router.put('/:id', (req, res) => {
+//     let data = {
+//       name,
+//       price,
+//       inventory
+//     } = req.body;
+//     let productId = req.params.id;
+
+//     return knex('products').where('id', productId).update({
+//         name: data.name,
+//         price: data.price,
+//         inventory: data.inventory,
+//       }, '*')
+//       .then(result => {
+//         return res.redirect(`/products/${productId}`);
+//       })
+//       .catch(err => {
+//         return res.redirect(`/products/${productId}/edit`);
+//       })
+//   })
+
+
+
+  // .delete('/:id', (req, res) => {
+  //   let productId = req.params.id;
+
+  //   return knex('products')
+  //     .where({
+  //       id: productId
+  //     })
+  //     .select()
+  //     .then(result => {
+  //       if (result.length) {
+  //         return result;
+  //       } else {
+  //         throw new Error('Product not found in database')
+  //       }
+  //     })
+  //     .then(result => {
+  //       knex('products')
+  //         .delete()
+  //         .where({
+  //           id: productId
+  //         })
+  //         .then(result => {
+  //           res.redirect(`/products`)
+  //         })
+  //     })
+  //     .catch(err => {
+  //       res.redirect(`/products/${productId}`)
+  //     })
+  // })
 
 module.exports = router;

@@ -1,68 +1,125 @@
-//express work done: Post Put Delete
-
 const express = require('express');
+const knex = require('../knex/knex.js');
+const handlebars = require('express-handlebars');
 const router = express.Router();
-const db = require('../db/products')
-const helper = require('../helper')
-
-
-const validReq = { "success": true };
-const invalidReq = { "success": false };
+const helpers = require('../helper')
 
 router.get('/new', (req, res) => {
   return res.render('new');
-  console.log(db.getAll())
 })
+  .get('/:id/edit', (req, res) => {
+    let id = req.params.id;
 
-router.get('/:id/edit', (req, res) => {
-  let id = req.params.id;
-  let elementIndex = db.find(id);
-  return res.render('edit', elementIndex);
-  console.log(db.find(id))
-})
-
-router.get('/:id', (req, res) => {
-  let id = req.params.id;
-  let elementIndex = db.find(id);
-  res.render('singleProduct', elementIndex)
-})
-
-router.get('/', (req, res) => {
-  console.log(db.getAll())
-  return res.render('products', { db: db.getAll() });
-
-})
-
-  .post('/', (req, res) => {
-    let validate = helper.validateProduct(req.body);
-    console.log('ll', validate);
-    if (validate) {
-      if (db.create(req.body)) {
+    return knex('products')
+      .where({ id: id })
+      .select()
+      .then(result => {
+        if (result.length) {
+          return result[0]
+        } else {
+          throw new Error('Product not found')
+        }
+      })
+      .then(result => {
+        res.render('edit', result)
+      })
+      .catch(err => {
         return res.redirect('/products')
+
+      })
+  })
+  .get('/:id', (req, res) => {
+    let id = req.params.id;
+
+    return knex('products')
+      .where({ id: id })
+      .select()
+      .then(result => {
+        if (result.length) {
+          return result[0]
+        } else {
+          throw new Error('Product not found')
+        }
+      })
+      .then(result => {
+        res.render('singleProduct', result)
+      })
+      .catch(err => {
+        return res.redirect('/products')
+      })
+  })
+  .get('/', (req, res) => {
+    return knex('products')
+      .select()
+      .then(result => {
+        console.log(result);
+        return res.render('products', {db: result})
+      })
+  })
+
+router.post('/', (req, res) => {
+  let body = req.body
+
+  const data = {
+    name: body.name,
+    price: body.price,
+    inventory: body.inventory
+  }
+  const validate = helpers.validateProduct(data);
+
+  if (validate === true) {
+    return knex('products')
+      .insert(data)
+      .then(result => {
+        res.redirect('/products')
+      })
+      .catch(err => {
+        res.status(400).json({
+          message: 'Cannot Get Request'
+        })
+      })
+  } else {
+    res.json('error');
+    res.redirect('/products/new')
+  }
+})
+router.put(`/:id`, (req, res) => {
+  let id = req.params.id;
+  let data = { name, price, inventory } = req.body;
+    return knex('products')
+    .where(`id`, id)
+    .update({ name: data.name, price: data.price, inventory: data.inventory })
+    .then(result => {
+      return res.redirect(`/products/${id}`)
+    })
+  
+  .catch(err => {
+    return res.redirect(`products/${id}/edit`)
+  })
+})
+.delete('/:id', (req, res) => {
+  let id = req.params.id;
+
+  return knex('products')
+    .where({ id: id })
+    .select()
+    .then(result => {
+      if(result.length) {
+        return result;
+      } else {
+        throw new Error(`Product Not Found`)
       }
-    } else {
-      return res.redirect('/products/new')
-    }
-  })
-
-  .put('/:id/edit', (req, res) => {
-    let id = req.params.id;
-    let updatedItem = db.edit(id, req.body)
-    if (updatedItem) {
-      res.redirect(`/products`)
-    } else {
-      res.redirect(`/products/${id}/edit`)
-    }
-  })
-
-  .delete('/:id', (req, res) => {
-    let id = req.params.id;
-    let body = req.body;
-    if (db.remove(id)) {
-      res.redirect('/products');
-    } else {
-      res.redirect('/products/:id')
-    }
-  });
-
+    }) 
+    .then(result => {
+      return knex(`products`)
+      .delete()
+      .where({id: id})
+    })
+    .then(result => {
+      res.redirect(`/prodcuts`)
+    })
+    .catch(err => {
+      res.redirect(`/products/${id}`)
+    })
+})
 module.exports = router;
